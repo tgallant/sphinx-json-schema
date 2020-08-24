@@ -49,9 +49,34 @@ class JsonSchema(Directive):
         if not self.schema:
             return []
 
-        code = self.schema.render()
-        literal = nodes.literal_block(code, code)
-        literal['language'] = 'json'
-        # add a caption
-        literal = container_wrapper(self, literal, 'JSON schema' + self.schema.version)
-        return [literal]
+        schema = self.schema.schema
+        properties = schema.get('properties', {})
+        required_properties = schema.get('required', [])
+        content = []
+        for title, prop in properties.items():
+            section = nodes.section(ids=[title], names=[title])
+            titlenode = nodes.title(title, title)
+            section += titlenode
+            description = prop.get('description', '')
+            desc_text, desc_msg = self.state.inline_text(description, self.lineno)
+            desc = nodes.description()
+            for text_node in desc_text:
+                desc += text_node
+            section += desc
+            is_required = title in required_properties
+            required = nodes.description()
+            required_tmpl = f'**Required**: {is_required}'
+            required_text, required_msg = self.state.inline_text(required_tmpl, self.lineno)
+            for text_node in required_text:
+                required += text_node
+            section += required
+            default_value = prop.get('default')
+            if default_value:
+                default = nodes.description()
+                default_tmpl = f'**Default**: {default_value}'
+                default_text, default_msg = self.state.inline_text(default_tmpl, self.lineno)
+                for text_node in default_text:
+                    default += text_node
+                section += default
+            content.append(section)
+        return content

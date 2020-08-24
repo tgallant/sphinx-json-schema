@@ -48,7 +48,8 @@ setup(
     packages=find_packages(),
     install_requires=(
         'sphinx',
-        'jsonpointer'
+        'jsonpointer',
+        'pyyaml'
     ),
     zip_safe=True
 )

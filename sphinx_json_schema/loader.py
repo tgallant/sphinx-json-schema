@@ -9,6 +9,8 @@ import requests
 from collections import OrderedDict
 import re
 
+import yaml
+
 from .mergers import merge
 
 
@@ -46,13 +48,15 @@ class JsonSchemaLoader(object):
         self.schema = self.ordered_load('\n'.join(text))
 
     def _load_external(self, file_or_url):
+        is_yaml = file_or_url.endswith('.yaml')
         if file_or_url.startswith('http'):
             text = requests.get(file_or_url)
-            self.schema = self.ordered_load(text.content)
+            self.schema = self.ordered_load(text.content, is_yaml)
         else:
             # will raise an exception if file is not found
             with open(file_or_url) as file:
-                self.schema = self.ordered_load(file)
+                content = file.read()
+                self.schema = self.ordered_load(content, is_yaml)
 
     def _splitpointer(self, path):
         val = path.split('#', 1)
@@ -60,7 +64,7 @@ class JsonSchemaLoader(object):
             val.append(None)
         return val
 
-    def ordered_load(self, stream):
+    def ordered_load(self, stream, is_yaml = False):
 
         # creates an ordered dictionary from a list of pairs
         def object_pairs_hook(pairs):
@@ -95,12 +99,10 @@ class JsonSchemaLoader(object):
 
             return ordered
 
-        if type(stream) == str:
-            result = json.loads(stream, object_pairs_hook=object_pairs_hook)
-        else:
-            stream.seek(0)
-            result = json.load(stream, object_pairs_hook=object_pairs_hook)
-
+        if is_yaml:
+            data_dict = yaml.safe_load(stream)
+            stream = json.dumps(data_dict)
+        result = json.loads(stream, object_pairs_hook=object_pairs_hook)
         return result
 
     def render(self):

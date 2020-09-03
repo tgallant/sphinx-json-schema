@@ -51,17 +51,22 @@ class JsonSchema(Directive):
 
         schema = self.schema.schema
         properties = schema.get('properties', {})
+        sorted_props = {k: properties[k] for k in sorted(properties)}
         required_properties = schema.get('required', [])
         content = []
-        for title, prop in properties.items():
+        for title, prop in sorted_props.items():
             section = nodes.section(ids=[title], names=[title])
             titlenode = nodes.title(title, title)
             section += titlenode
             description = prop.get('description', '')
-            desc_text, desc_msg = self.state.inline_text(description, self.lineno)
+            desc_lines = description.split('\n')
             desc = nodes.description()
-            for text_node in desc_text:
-                desc += text_node
+            for line in desc_lines:
+                desc_text, desc_msg = self.state.inline_text(line, self.lineno)
+                p = nodes.line()
+                for text_node in desc_text:
+                    p += text_node
+                desc += p
             section += desc
             is_required = title in required_properties
             required = nodes.description()

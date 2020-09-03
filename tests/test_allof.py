@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from sphinx_json_schema.mergers import merge_and
+from sphinx_json_schema_formatter.mergers import merge_and
 
 
 class AllOfTestCase(TestCase):

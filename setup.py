@@ -6,15 +6,15 @@ JSON Schema renderer for Sphinx
 from setuptools import setup, find_packages
 import os
 
-PACKAGE = 'sphinx_json_schema'
+PACKAGE = 'sphinx_json_schema_formatter'
 
 # credentials
-AUTHOR = 'Thomas Khyn'
-AUTHOR_EMAIL = 'thomas@ksytek.com'
-URL = 'https://bitbucket.org/tkhyn/sphinx-json-schema/'
+AUTHOR = 'Tim Gallant'
+AUTHOR_EMAIL = 'me@timgallant.us'
+URL = 'https://github.com/tgallant/sphinx-json-schema-formatter'
 
 # imports __version__ and __version_info__ variables
-exec(open('sphinx_json_schema/version.py').read())
+exec(open('sphinx_json_schema_formatter/version.py').read())
 
 dev_status = __version_info__[3]
 if dev_status == 'alpha' and not __version_info__[4]:

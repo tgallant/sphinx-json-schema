@@ -6,7 +6,7 @@ Multiple nested merge of different types
 from unittest import TestCase
 from copy import deepcopy
 
-from sphinx_json_schema.mergers import merge_and, merge_or
+from sphinx_json_schema_formatter.mergers import merge_and, merge_or
 
 
 class MergeTestCase(TestCase):

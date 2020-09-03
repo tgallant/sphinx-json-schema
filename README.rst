@@ -19,7 +19,7 @@ Add the extension name to your ``conf.py``::
 
    extensions = [
       ...
-      'sphinx_json_schema',
+      'sphinx_json_schema_formatter',
       ...
    ]
 
@@ -37,7 +37,7 @@ found from the ``json_schema_root_dir`` specified in the ``conf.py`` file.
 allOf, oneOf, anyOf, not support
 --------------------------------
 
-``sphinx_json_schema`` supports the ``allOf``, ``oneOf``, ``anyOf`` and ``not`` keywords. It can
+``sphinx_json_schema_formatter`` supports the ``allOf``, ``oneOf``, ``anyOf`` and ``not`` keywords. It can
 also parse references to other schemas. The final JSON output is the result of the operations and
 inclusions of other schemas. This means it can be quite long even if the original ``.json`` file
 is very short!

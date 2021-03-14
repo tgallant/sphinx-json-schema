@@ -3,6 +3,9 @@
 
 import os.path
 
+import docutils.parsers.rst
+import docutils.utils
+import docutils.frontend
 from docutils import nodes
 from docutils.parsers.rst import Directive
 from sphinx.directives.code import container_wrapper
@@ -45,6 +48,14 @@ class JsonSchema(Directive):
         else:
             self.schema = None
 
+    def parse_rst(self, text: str) -> nodes.document:
+        parser = docutils.parsers.rst.Parser()
+        components = (docutils.parsers.rst.Parser,)
+        settings = docutils.frontend.OptionParser(components=components).get_default_values()
+        document = docutils.utils.new_document('<rst-doc>', settings=settings)
+        parser.parse(text, document)
+        return document
+
     def run(self):
         if not self.schema:
             return []
@@ -58,15 +69,10 @@ class JsonSchema(Directive):
             section = nodes.section(ids=[title], names=[title])
             titlenode = nodes.title(title, title)
             section += titlenode
-            description = prop.get('description', '')
-            desc_lines = description.split('\n')
             desc = nodes.description()
-            for line in desc_lines:
-                desc_text, desc_msg = self.state.inline_text(line, self.lineno)
-                p = nodes.line()
-                for text_node in desc_text:
-                    p += text_node
-                desc += p
+            description = prop.get('description', '')
+            desc_node = self.parse_rst(description)
+            desc += desc_node
             section += desc
             is_required = title in required_properties
             required = nodes.description()
